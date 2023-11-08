@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react';
 import Header from './Header';
 import RestaurantsDisplay from './Restaurants';
 
-const url = "https://developerfunnel.herokuapp.com/restaurants";
+const url = "https://65.0.169.101:8443/restaurant/";
 
 class Home extends Component{
     constructor(){
