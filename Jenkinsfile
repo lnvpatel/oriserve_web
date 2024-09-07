@@ -54,7 +54,7 @@ pipeline {
             steps {
                 script {
                     dir('oriserve_web_cicd') {
-                        sh 'zip -r build.zip ./build'
+                        sh 'zip -r build.zip /var/lib/jenkins/workspace/oriserve_web_cicd/build'
                     }
                 }
             }
