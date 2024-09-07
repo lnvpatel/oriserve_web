@@ -10,17 +10,19 @@ pipeline {
 
     stages {
         stage('Clean Up') {
-    steps {
-        script {
-            // Navigate to the frontend directory
-            dir('frontend') {
-                // Remove node_modules and package-lock.json
-                sh 'rm -rf node_modules'
-                sh 'rm -f package-lock.json'
+            steps {
+                script {
+                    // Navigate to the frontend directory
+                    dir('frontend') {
+                        // Clear npm cache
+                        sh 'npm cache clean --force'
+                        // Remove node_modules and package-lock.json
+                        sh 'rm -rf node_modules'
+                        sh 'rm -f package-lock.json'
+                    }
+                }
             }
         }
-    }
-}
 
         stage('Checkout') {
             steps {
@@ -72,7 +74,13 @@ pipeline {
                     // SSH into EC2 and unzip the build files
                     sh '''
                         ssh -o StrictHostKeyChecking=no ec2-user@${EC2_INSTANCE_IP} <<EOF
-                        unzip -o /home/ec2-user/build.zip -d /home/ec2-user/
+                        if [ -f /home/ec2-user/build.zip ]; then
+                            echo "Unzipping build.zip..."
+                            unzip -o /home/ec2-user/build.zip -d /home/ec2-user/
+                        else
+                            echo "build.zip not found!"
+                            exit 1
+                        fi
                         EOF
                     '''
                 }
@@ -82,15 +90,23 @@ pipeline {
         stage('Create CodeDeploy Deployment') {
             steps {
                 script {
-                    // Trigger CodeDeploy to deploy to all EC2 instances in the Auto Scaling group
+                    // Ensure the appspec.yml file exists
                     sh '''
-                    aws deploy create-deployment \
-                        --application-name ${CODEDEPLOY_APP_NAME} \
-                        --deployment-group-name ${CODEDEPLOY_DEPLOY_GROUP} \
-                        --deployment-config-name CodeDeployDefault.AllAtOnce \
-                        --description "Deploying React App" \
-                        --file-exists-behavior OVERWRITE \
-                        --revision revisionType=Local,location=/home/ec2-user/appspec.yml
+                        ssh -o StrictHostKeyChecking=no ec2-user@${EC2_INSTANCE_IP} <<EOF
+                        if [ -f /home/ec2-user/appspec.yml ]; then
+                            echo "Creating CodeDeploy deployment..."
+                            aws deploy create-deployment \
+                                --application-name ${CODEDEPLOY_APP_NAME} \
+                                --deployment-group-name ${CODEDEPLOY_DEPLOY_GROUP} \
+                                --deployment-config-name CodeDeployDefault.AllAtOnce \
+                                --description "Deploying React App" \
+                                --file-exists-behavior OVERWRITE \
+                                --revision revisionType=Local,location=/home/ec2-user/build.zip
+                        else
+                            echo "appspec.yml not found!"
+                            exit 1
+                        fi
+                        EOF
                     '''
                 }
             }
