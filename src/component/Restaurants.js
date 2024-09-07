@@ -2,46 +2,41 @@ import React, { Fragment } from 'react';
 import './Restaurants.css';
 
 const RestaurantsDisplay = (props) => {
-    console.log("Props is>>>>>",props)
+    console.log("Props is>>>>>", props);
 
-    const renderList = ({datalist}) => {
-        if(datalist){
-            return datalist.map((item,index) => {
-                return(
-                    <div class="card col-md-2">
-                            <div class="row">
-                            <img class="card-img-top" src={item.thumb} alt="thumb"/>
-                            <span class="topTemp">{item.name}</span>
-                            </div>
-                            <div class="card-body">
-                            <span class="max">{item.city}</span>   /
-                                      <span class="min">{item.locality}</span>
-                                <h4 class="card-title">2 Person = ₹{item.min_price}</h4>
-                                
-                            </div>
+    const renderList = ({ datalist }) => {
+        if (datalist && datalist.length > 0) {
+            return datalist.map((item, index) => {
+                return (
+                    <div className="card col-md-2" key={index}>
+                        <div className="row">
+                            <img className="card-img-top" src={item.thumb} alt={`Thumbnail of ${item.name}`} />
+                            <span className="topTemp">{item.name}</span>
                         </div>
-                )
-            })
-        }else{
-            return(
+                        <div className="card-body">
+                            <span className="max">{item.city}</span>   /
+                            <span className="min">{item.locality}</span>
+                            <h4 className="card-title">2 Person = ₹{item.min_price}</h4>
+                        </div>
+                    </div>
+                );
+            });
+        } else {
+            return (
                 <div>
                     <center>
-                    <img src="/loading.gif"/>
+                        <img src="/loading.gif" alt="Loading..." />
                     </center>
                 </div>
-               
-            )
+            );
         }
-        
+    };
 
-    }
-
-
-    return(
+    return (
         <Fragment>
-          {renderList(props)}
+            {renderList(props)}
         </Fragment>
-    )
-}
+    );
+};
 
 export default RestaurantsDisplay;
