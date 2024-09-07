@@ -1,3 +1,3 @@
 #!/bin/bash
 cd /var/www/html
-npm install --production
+sudo npm install --production
