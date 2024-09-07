@@ -9,6 +9,19 @@ pipeline {
     }
 
     stages {
+        stage('Clean Up') {
+    steps {
+        script {
+            // Navigate to the frontend directory
+            dir('frontend') {
+                // Remove node_modules and package-lock.json
+                sh 'rm -rf node_modules'
+                sh 'rm -f package-lock.json'
+            }
+        }
+    }
+}
+
         stage('Checkout') {
             steps {
                 // Checkout the frontend code from the repository
