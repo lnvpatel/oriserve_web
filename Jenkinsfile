@@ -4,7 +4,7 @@ pipeline {
     environment {
         CODEDEPLOY_APP_NAME = 'webtier_aap'
         CODEDEPLOY_DEPLOY_GROUP = 'Oriserve_deployment_group'
-        EC2_INSTANCE_IP = '3.108.62.73'
+        EC2_INSTANCE_IP = '3.111.188.109'
     }
 
     stages {
@@ -61,24 +61,25 @@ pipeline {
         }
 
         stage('Push to EC2') {
-            steps {
-                script {
-                    sh 'scp -o StrictHostKeyChecking=no build.zip ec2-user@${EC2_INSTANCE_IP}:/home/ec2-user/build.zip'
-                    
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no ec2-user@${EC2_INSTANCE_IP} <<EOF
-                        if [ -f /home/ec2-user/build.zip ]; then
-                            echo "Unzipping build.zip..."
-                            unzip -o /home/ec2-user/build.zip -d /home/ec2-user/
-                        else
-                            echo "build.zip not found!"
-                            exit 1
-                        fi
-                        EOF
-                    '''
-                }
-            }
+    steps {
+        script {
+            // Ensure the correct path to the build.zip file
+            sh 'scp -o StrictHostKeyChecking=no /var/lib/jenkins/workspace/oriserve_web_cicd/oriserve_web_cicd/build.zip ec2-user@${EC2_INSTANCE_IP}:/home/ec2-user/build.zip'
+
+            sh '''
+                ssh -o StrictHostKeyChecking=no ec2-user@${EC2_INSTANCE_IP} <<EOF
+                if [ -f /home/ec2-user/build.zip ]; then
+                    echo "Unzipping build.zip..."
+                    unzip -o /home/ec2-user/build.zip -d /home/ec2-user/
+                else
+                    echo "build.zip not found!"
+                    exit 1
+                fi
+                EOF
+            '''
         }
+    }
+}
 
         stage('Create CodeDeploy Deployment') {
             steps {
