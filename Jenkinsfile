@@ -50,7 +50,7 @@ pipeline {
         stage('Package') {
             steps {
                 script {
-                    dir('frontend') {
+                    dir('oriserve_web_cicd') {
                         sh 'zip -r build.zip build'
                     }
                 }
