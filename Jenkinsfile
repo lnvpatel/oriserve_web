@@ -11,7 +11,7 @@ pipeline {
         stage('Clean Up') {
             steps {
                 script {
-                    dir('frontend') {
+                    dir('oriserve_web_cicd') {
                         sh 'npm cache clean --force'
                         sh 'rm -rf node_modules'
                         sh 'rm -f package-lock.json'
@@ -30,7 +30,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    dir('frontend') {
+                    dir('oriserve_web_cicd') {
                         sh 'npm install'
                     }
                 }
@@ -40,7 +40,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    dir('frontend') {
+                    dir('oriserve_web_cicd') {
                         sh 'npm run build'
                     }
                 }
