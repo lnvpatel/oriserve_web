@@ -41,7 +41,10 @@ pipeline {
             steps {
                 script {
                     dir('oriserve_web_cicd') {
-                        sh 'npm run build'
+                        sh '''
+                        export NODE_OPTIONS=--openssl-legacy-provider
+                        npm run build
+                    '''
                     }
                 }
             }
