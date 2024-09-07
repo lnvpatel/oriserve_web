@@ -1,4 +1,4 @@
-import React, {Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import './Header.css';
 
 class Header extends Component {
@@ -7,25 +7,25 @@ class Header extends Component {
       
         return(
             <Fragment>
-               <nav class="navbar navbar-inverse">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>                        
+               <nav className="navbar navbar-inverse">
+                <div className="container-fluid">
+                    <div className="navbar-header">
+                    <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span className="icon-bar"></span>
+                        <span className="icon-bar"></span>
+                        <span className="icon-bar"></span>                        
                     </button>
-                    <a class="navbar-brand">Developer Funnel</a>
+                    <a className="navbar-brand" href="/">Developer Funnel</a>
                     </div>
-                    <div class="collapse navbar-collapse" id="myNavbar">
-                    <ul class="nav navbar-nav">
-                        <li ><a >Home</a></li>
-                        <li><a >Page 2</a></li>
-                        <li><a>Page 3</a></li>
+                    <div className="collapse navbar-collapse" id="myNavbar">
+                    <ul className="nav navbar-nav">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/page2">Page 2</a></li>
+                        <li><a href="/page3">Page 3</a></li>
                     </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                        <li><a ><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    <ul className="nav navbar-nav navbar-right">
+                        <li><a href="/signup"><span className="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                        <li><a href="/login"><span className="glyphicon glyphicon-log-in"></span> Login</a></li>
                     </ul>
                     </div>
                 </div>
@@ -34,6 +34,5 @@ class Header extends Component {
         )
     }
 }
-
 
 export default Header;
