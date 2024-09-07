@@ -1,3 +1,3 @@
 #!/bin/bash
 cd /var/www/html
-npm start &
+sudo npm start &
