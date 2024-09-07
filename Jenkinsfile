@@ -5,7 +5,7 @@ pipeline {
         // Replace with your deployment variables
         CODEDEPLOY_APP_NAME = 'webtier_aap'
         CODEDEPLOY_DEPLOY_GROUP = 'Oriserve_deployment_group'
-        EC2_INSTANCE_IP = '65.0.101.92'  // You still need an instance to push the build artifacts
+        EC2_INSTANCE_IP = '3.108.62.73'  // You still need an instance to push the build artifacts
     }
 
     stages {
