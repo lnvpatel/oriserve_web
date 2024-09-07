@@ -31,7 +31,7 @@ pipeline {
             steps {
                 script {
                     dir('frontend') {
-                        sh 'npm install'
+                        sh 'sudo npm install'
                     }
                 }
             }
@@ -41,7 +41,7 @@ pipeline {
             steps {
                 script {
                     dir('frontend') {
-                        sh 'npm run build'
+                        sh 'sudo npm run build'
                     }
                 }
             }
@@ -51,7 +51,7 @@ pipeline {
             steps {
                 script {
                     dir('frontend') {
-                        sh 'zip -r build.zip build'
+                        sh 'sudo zip -r build.zip build'
                     }
                 }
             }
