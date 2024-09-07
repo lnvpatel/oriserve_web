@@ -2,23 +2,20 @@ pipeline {
     agent any
 
     environment {
-        // Replace with your deployment variables
         CODEDEPLOY_APP_NAME = 'webtier_aap'
         CODEDEPLOY_DEPLOY_GROUP = 'Oriserve_deployment_group'
-        EC2_INSTANCE_IP = '3.108.62.73'  // You still need an instance to push the build artifacts
+        EC2_INSTANCE_IP = '3.108.62.73'
     }
 
     stages {
         stage('Clean Up') {
             steps {
                 script {
-                    // Navigate to the frontend directory
                     dir('frontend') {
-                        // Clear npm cache
                         sh 'npm cache clean --force'
-                        // Remove node_modules and package-lock.json
                         sh 'rm -rf node_modules'
                         sh 'rm -f package-lock.json'
+                        sh 'rm -rf build'  // Remove existing build directory
                     }
                 }
             }
@@ -26,7 +23,6 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                // Checkout the frontend code from the repository
                 checkout scm
             }
         }
@@ -34,9 +30,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    // Navigate to the frontend directory
                     dir('frontend') {
-                        // Install npm dependencies
                         sh 'npm install'
                     }
                 }
@@ -46,7 +40,6 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    // Build the React application
                     dir('frontend') {
                         sh 'npm run build'
                     }
@@ -57,7 +50,6 @@ pipeline {
         stage('Package') {
             steps {
                 script {
-                    // Package the build artifacts
                     dir('frontend') {
                         sh 'zip -r build.zip build'
                     }
@@ -68,10 +60,8 @@ pipeline {
         stage('Push to EC2') {
             steps {
                 script {
-                    // Push the build files to the EC2 instance directly
                     sh 'scp -o StrictHostKeyChecking=no build.zip ec2-user@${EC2_INSTANCE_IP}:/home/ec2-user/build.zip'
                     
-                    // SSH into EC2 and unzip the build files
                     sh '''
                         ssh -o StrictHostKeyChecking=no ec2-user@${EC2_INSTANCE_IP} <<EOF
                         if [ -f /home/ec2-user/build.zip ]; then
@@ -90,7 +80,6 @@ pipeline {
         stage('Create CodeDeploy Deployment') {
             steps {
                 script {
-                    // Ensure the appspec.yml file exists
                     sh '''
                         ssh -o StrictHostKeyChecking=no ec2-user@${EC2_INSTANCE_IP} <<EOF
                         if [ -f /home/ec2-user/appspec.yml ]; then
