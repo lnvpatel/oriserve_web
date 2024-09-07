@@ -1,0 +1,15 @@
+version: 0.0
+os: linux
+files:
+  - source: /home/ec2-user/build/
+    destination: /var/www/html/
+
+hooks:
+  AfterInstall:
+    - location: /home/ec2-user/scripts/install_dependencies.sh
+      timeout: 300
+      runas: ec2-user
+  ApplicationStart:
+    - location: /home/ec2-user/scripts/start_application.sh
+      timeout: 300
+      runas: ec2-user
