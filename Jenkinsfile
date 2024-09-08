@@ -2,6 +2,7 @@ pipeline {
     agent any
     tools {
         nodejs 'NodeJs'
+    }
 
     environment {
         CODEDEPLOY_APP_NAME = 'your_codedeploy_app_name'
