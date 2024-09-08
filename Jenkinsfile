@@ -5,6 +5,8 @@ pipeline {
         CODEDEPLOY_APP_NAME = 'your_codedeploy_app_name'
         CODEDEPLOY_DEPLOY_GROUP = 'your_codedeploy_deployment_group'
         AWS_CREDENTIALS = 'jenkins_ec2_ssh' // Jenkins AWS credentials ID
+        your_region = 'ap-south-1'
+        your_project_directory = 'oriserve_web_dir'
     }
 
     stages {
