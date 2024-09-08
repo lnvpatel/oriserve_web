@@ -9,7 +9,6 @@ pipeline {
         CODEDEPLOY_DEPLOY_GROUP = 'your_codedeploy_deployment_group'
         AWS_CREDENTIALS = 'jenkins_ec2_ssh' // Jenkins AWS credentials ID
         your_region = 'ap-south-1'
-        your_project_directory = 'oriserve_web_dir'
     }
 
     stages {
@@ -56,7 +55,7 @@ pipeline {
             steps {
                 script {
                     dir('your_project_directory') {
-                        sh 'zip -r build.zip build'
+                        sh 'cd .. && zip -r build.zip build'
                     }
                 }
             }
