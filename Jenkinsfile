@@ -64,7 +64,7 @@ pipeline {
         stage('Deploy to CodeDeploy') {
             steps {
                 script {
-                    withAWS(credentials: "${AWS_CREDENTIALS}", region: 'your_region') {
+                    withAWS(credentials: "${AWS_CREDENTIALS}", region: "${AWS_REGION}") {
                         sh '''
                             aws deploy create-deployment \
                                 --application-name ${CODEDEPLOY_APP_NAME} \
