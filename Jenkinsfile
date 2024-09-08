@@ -9,6 +9,7 @@ pipeline {
         CODEDEPLOY_DEPLOY_GROUP = 'Oriserve_deployment_group'
         AWS_CREDENTIALS = 'AWS_JENKINS' // Jenkins AWS credentials ID
         AWS_REGION = 'ap-south-1'
+        S3_BUCKET_NAME = 'oriservereact '
     }
 
     stages {
