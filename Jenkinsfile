@@ -9,7 +9,9 @@ pipeline {
         CODEDEPLOY_DEPLOY_GROUP = 'Oriserve_deployment_group'
         AWS_CREDENTIALS = 'AWS_JENKINS' // Jenkins AWS credentials ID
         AWS_REGION = 'ap-south-1'
-        S3_BUCKET_NAME = 'oriservereact '
+        S3_BUCKET_NAME = 'oriservereact'
+        LOCAL_FILE_PATH = '/var/lib/jenkins/workspace/oriserve_web_pipeline/build.zip' // Path to the local build artifact
+        S3_FILE_PATH = 'builds/build.zip' // Path in S3 bucket
     }
 
     stages {
@@ -62,6 +64,18 @@ pipeline {
             }
         }
 
+        stage('Upload to S3') {
+            steps {
+                script {
+                    withAWS(credentials: "${AWS_CREDENTIALS}", region: "${AWS_REGION}") {
+                        sh '''
+                            aws s3 cp ${LOCAL_FILE_PATH} s3://${S3_BUCKET_NAME}/${S3_FILE_PATH} --region ${AWS_REGION}
+                        '''
+                    }
+                }
+            }
+        }
+
         stage('Deploy to CodeDeploy') {
             steps {
                 script {
@@ -71,9 +85,9 @@ pipeline {
                                 --application-name ${CODEDEPLOY_APP_NAME} \
                                 --deployment-group-name ${CODEDEPLOY_DEPLOY_GROUP} \
                                 --deployment-config-name CodeDeployDefault.AllAtOnce \
-                                --description "Deploying React App without S3" \
+                                --description "Deploying React App from S3" \
                                 --file-exists-behavior OVERWRITE \
-                                --revision revisionType=Local,location=build.zip
+                                --revision revisionType=S3,s3Location={bucket=${S3_BUCKET_NAME},key=${S3_FILE_PATH},bundleType=zip}
                         '''
                     }
                 }
