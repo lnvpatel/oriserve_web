@@ -2,9 +2,8 @@ pipeline {
     agent any
 
     environment {
-        CODEDEPLOY_APP_NAME = 'webtier_aap'
+        CODEDEPLOY_APP_NAME = 'webtier_app'
         CODEDEPLOY_DEPLOY_GROUP = 'Oriserve_deployment_group'
-        EC2_INSTANCE_IP = '13.235.248.7'
     }
 
     stages {
@@ -54,53 +53,26 @@ pipeline {
             steps {
                 script {
                     dir('oriserve_web_cicd') {
-                        sh 'zip -r build.zip /var/lib/jenkins/workspace/oriserve_web_cicd/build'
+                        sh 'zip -r build.zip build appspec.yml scripts/'
                     }
                 }
             }
         }
 
-        stage('Push to EC2') {
-    steps {
-        script {
-            // Ensure the correct path to the build.zip file
-            sh 'scp -o StrictHostKeyChecking=no /var/lib/jenkins/workspace/oriserve_web_cicd/oriserve_web_cicd/build.zip ec2-user@${EC2_INSTANCE_IP}:/home/ec2-user/build.zip'
-
-            sh '''
-                ssh -o StrictHostKeyChecking=no ec2-user@${EC2_INSTANCE_IP} <<EOF
-                if [ -f /home/ec2-user/build.zip ]; then
-                    echo "Unzipping build.zip..."
-                    unzip -o /home/ec2-user/build.zip -d /home/ec2-user/
-                else
-                    echo "build.zip not found!"
-                    exit 1
-                fi
-                EOF
-            '''
-        }
-    }
-}
-
         stage('Create CodeDeploy Deployment') {
             steps {
                 script {
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no ec2-user@${EC2_INSTANCE_IP} <<EOF
-                        if [ -f /home/ec2-user/appspec.yml ]; then
-                            echo "Creating CodeDeploy deployment..."
-                            aws deploy create-deployment \
-                                --application-name ${CODEDEPLOY_APP_NAME} \
-                                --deployment-group-name ${CODEDEPLOY_DEPLOY_GROUP} \
-                                --deployment-config-name CodeDeployDefault.AllAtOnce \
-                                --description "Deploying React App" \
-                                --file-exists-behavior OVERWRITE \
-                                --revision revisionType=Local,location=/home/ec2-user/build.zip
-                        else
-                            echo "appspec.yml not found!"
-                            exit 1
-                        fi
-                        EOF
-                    '''
+                    withAWS(credentials: 'jenkins_ec2_ssh', region: 'ap-south-1') {
+                        sh '''
+                        aws deploy create-deployment \
+                            --application-name ${CODEDEPLOY_APP_NAME} \
+                            --deployment-group-name ${CODEDEPLOY_DEPLOY_GROUP} \
+                            --deployment-config-name CodeDeployDefault.AllAtOnce \
+                            --description "Deploying React App" \
+                            --file-exists-behavior OVERWRITE \
+                            --revision revisionType=Local,location=$(pwd)/build.zip
+                        '''
+                    }
                 }
             }
         }
