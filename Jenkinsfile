@@ -2,19 +2,20 @@ pipeline {
     agent any
 
     environment {
-        CODEDEPLOY_APP_NAME = 'webtier_app'
-        CODEDEPLOY_DEPLOY_GROUP = 'Oriserve_deployment_group'
+        CODEDEPLOY_APP_NAME = 'your_codedeploy_app_name'
+        CODEDEPLOY_DEPLOY_GROUP = 'your_codedeploy_deployment_group'
+        AWS_CREDENTIALS = 'jenkins_ec2_ssh' // Jenkins AWS credentials ID
     }
 
     stages {
         stage('Clean Up') {
             steps {
                 script {
-                    dir('oriserve_web_cicd') {
+                    dir('your_project_directory') {
                         sh 'npm cache clean --force'
                         sh 'rm -rf node_modules'
                         sh 'rm -f package-lock.json'
-                        sh 'rm -rf build'  // Remove existing build directory
+                        sh 'rm -rf build'
                     }
                 }
             }
@@ -29,7 +30,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    dir('oriserve_web_cicd') {
+                    dir('your_project_directory') {
                         sh 'npm install'
                     }
                 }
@@ -39,11 +40,8 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    dir('oriserve_web_cicd') {
-                        sh '''
-                        export NODE_OPTIONS=--openssl-legacy-provider
-                        npm run build
-                    '''
+                    dir('your_project_directory') {
+                        sh 'npm run build'
                     }
                 }
             }
@@ -52,25 +50,25 @@ pipeline {
         stage('Package') {
             steps {
                 script {
-                    dir('oriserve_web_cicd') {
-                        sh 'zip -r build.zip build appspec.yml scripts/'
+                    dir('your_project_directory') {
+                        sh 'zip -r build.zip build'
                     }
                 }
             }
         }
 
-        stage('Create CodeDeploy Deployment') {
+        stage('Deploy to CodeDeploy') {
             steps {
                 script {
-                    withAWS(credentials: 'jenkins_ec2_ssh', region: 'ap-south-1') {
+                    withAWS(credentials: "${AWS_CREDENTIALS}", region: 'your_region') {
                         sh '''
-                        aws deploy create-deployment \
-                            --application-name ${CODEDEPLOY_APP_NAME} \
-                            --deployment-group-name ${CODEDEPLOY_DEPLOY_GROUP} \
-                            --deployment-config-name CodeDeployDefault.AllAtOnce \
-                            --description "Deploying React App" \
-                            --file-exists-behavior OVERWRITE \
-                            --revision revisionType=Local,location=$(pwd)/build.zip
+                            aws deploy create-deployment \
+                                --application-name ${CODEDEPLOY_APP_NAME} \
+                                --deployment-group-name ${CODEDEPLOY_DEPLOY_GROUP} \
+                                --deployment-config-name CodeDeployDefault.AllAtOnce \
+                                --description "Deploying React App without S3" \
+                                --file-exists-behavior OVERWRITE \
+                                --revision revisionType=Local,location=build.zip
                         '''
                     }
                 }
