@@ -5,8 +5,8 @@ pipeline {
     }
 
     environment {
-        CODEDEPLOY_APP_NAME = 'your_codedeploy_app_name'
-        CODEDEPLOY_DEPLOY_GROUP = 'your_codedeploy_deployment_group'
+        CODEDEPLOY_APP_NAME = 'webtier_aap'
+        CODEDEPLOY_DEPLOY_GROUP = 'Oriserve_deployment_group'
         AWS_CREDENTIALS = 'AWS_JENKINS' // Jenkins AWS credentials ID
         your_region = 'ap-south-1'
     }
