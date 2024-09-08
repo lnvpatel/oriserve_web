@@ -18,12 +18,10 @@ pipeline {
         stage('Clean Up') {
             steps {
                 script {
-                    dir('your_project_directory') {
-                        sh 'npm cache clean --force'
-                        sh 'rm -rf node_modules'
-                        sh 'rm -f package-lock.json'
-                        sh 'rm -rf build'
-                    }
+                    sh 'npm cache clean --force'
+                    sh 'rm -rf node_modules'
+                    sh 'rm -f package-lock.json'
+                    sh 'rm -rf build'
                 }
             }
         }
@@ -37,9 +35,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    dir('your_project_directory') {
-                        sh 'npm install'
-                    }
+                    sh 'npm install'
                 }
             }
         }
@@ -47,9 +43,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    dir('your_project_directory') {
-                        sh 'npm run build'
-                    }
+                    sh 'npm run build'
                 }
             }
         }
@@ -57,11 +51,11 @@ pipeline {
         stage('Package') {
             steps {
                 script {
-                    dir('your_project_directory') {
-                        // Copy appspec.yml to the build directory
-                        sh 'cd.. && cp ../appspec.yml ./build
-                        sh 'cd .. && zip -r build.zip build'
-                    }
+                    // Copy appspec.yml to the build directory
+                    sh 'cp appspec.yml build/'
+                    
+                    // Create the zip file of the build directory
+                    sh 'zip -r build.zip build'
                 }
             }
         }
