@@ -4,7 +4,7 @@ pipeline {
     environment {
         CODEDEPLOY_APP_NAME = 'webtier_aap'
         CODEDEPLOY_DEPLOY_GROUP = 'Oriserve_deployment_group'
-        EC2_INSTANCE_IP = '3.111.188.109'
+        EC2_INSTANCE_IP = '13.235.248.7'
     }
 
     stages {
