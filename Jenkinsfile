@@ -58,6 +58,8 @@ pipeline {
             steps {
                 script {
                     dir('your_project_directory') {
+                        // Copy appspec.yml to the build directory
+                        sh 'cd.. && cp ../appspec.yml ./build
                         sh 'cd .. && zip -r build.zip build'
                     }
                 }
