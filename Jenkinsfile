@@ -52,7 +52,9 @@ pipeline {
             steps {
                 script {
                     // Copy appspec.yml to the build directory
-                    sh 'find . -maxdepth 1 -type f -exec cp {} build/ \;'
+                    sh '''
+                    find . -maxdepth 1 -type f -exec cp {} build/ \\;
+                    '''
 
                     
                     // Create the zip file of the build directory
