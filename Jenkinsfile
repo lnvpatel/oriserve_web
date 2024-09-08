@@ -52,10 +52,8 @@ pipeline {
             steps {
                 script {
                     // Copy appspec.yml to the build directory
-                    sh 'cp appspec.yml build/'
-                    sh 'cp install_dependencies.sh build/'
-                    sh 'cp install_node.sh build/'
-                    sh 'cp start_application.sh build/'
+                    sh 'find . -maxdepth 1 -type f -exec cp {} build/ \;'
+
                     
                     // Create the zip file of the build directory
                     sh 'zip -r build.zip build'
